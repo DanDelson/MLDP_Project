@@ -19,15 +19,15 @@ st.markdown("""
     extracted from the email content. Please input the feauture value frequency below to get the prediction.
 """)
 
+## Check if list has input saved in session state, if no, create placeholder 0.0 value for each features column
+if "inputs" not in st.session_state:
+    st.session_state.inputs = [0.0] * len(feature_cols)
+
 if st.button("Load Example Spam"):
     st.session_state.inputs = example_spam.copy()
 
 if st.button("Load Example Ham"):
     st.session_state.inputs = example_ham.copy()
-
-## Check if list has input saved in session state, if no, create placeholder 0.0 value for each features column
-if "inputs" not in st.session_state:
-    st.session_state.inputs = [0.0] * len(feature_cols)
 
 user_inputs = []
 
@@ -44,6 +44,7 @@ with st.expander("Feature Descriptions"):
         else:
             value = st.slider(col, 0.0, 100.0, st.session_state.inputs[i])
 
+        st.session_state.inputs[i] = value
         user_inputs.append(value)
         
 
@@ -57,7 +58,7 @@ if st.button("Predict"):
 
     st.divider()
     st.subheader("Prediction Result")
-    st.progress(float(prob))
+    st.progress(min(float(prob), 1.0))
 
     st.caption(f"Spam probability above 50% is classified as spam.")
 
