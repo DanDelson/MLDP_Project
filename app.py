@@ -5,20 +5,25 @@ import pandas as pd
 
 # Load Model, Model is trainned by Spambase dataset from UCI ML Repo, and uses numeric features such as frequency of certain words and average capital run length to predict if an email is spam or not
 model = joblib.load('spambase_best_rs_rf_model.pkl')
+# Load Models Columns name
+feature_cols = joblib.load("feature_columns.pkl")
 
 ## Streamlit App
 st.title("Spam Email Detection")
 
-## User Input, Sliders are use to determine how frquent a word appears in the email, and the average capital run is also a feature used in the model
-freeFreq = st.slider("Frequency of 'free'", 0.0, 100.0)
-moneyFreq = st.slider("Frequency of 'money'", 0.0, 100.0)
-dollarFreq = st.slider("Frequency of '$'", 0.0, 100.0)
-capitalFreq = st.slider("Average Capital Run", 0.0, 10.0)
+user_inputs = []
 
+st.subheader("Enter Feature Values")
+
+for col in feature_cols:
+    value = st.number_input(col, min_value=0.0, max_value=100.0, value=0.0)
+    user_inputs.append(value)
 
 if st.button("Predict"):
-    prediction = model.predict([[freeFreq, moneyFreq, dollarFreq, capitalFreq]])
-    if prediction[0] == 1:
-        st.success("The email is classified as SPAM.")
+    prediction = model.predict([user_inputs])[0]
+    prob = model.predict_proba([user_inputs])[0][1]
+
+    if prediction == 1:
+        st.error(f"SPAM detected (Probability: {prob:.2%})")
     else:
-        st.success("The email is classified as HAM.")
+        st.success(f"Not spam (Probability: {prob:.2%})")
