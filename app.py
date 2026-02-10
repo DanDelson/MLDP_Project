@@ -32,6 +32,9 @@ if "inputs" not in st.session_state:
 user_inputs = []
 
 st.subheader("Enter Feature Values")
+st.caption("Values represent percentage frequency within the email text.")
+
+st.button("Reset Inputs", on_click=lambda: st.session_state.update({"inputs": [0.0] * len(feature_cols)}))
 
 with st.expander("Feature Descriptions"):
     st.info("Enter feature values based on email statistics. Default values are zero")
@@ -42,6 +45,7 @@ with st.expander("Feature Descriptions"):
             value = st.slider(col, 0.0, 100.0, st.session_state.inputs[i])
 
         user_inputs.append(value)
+        
 
 if st.button("Predict"):
     if sum(user_inputs) == 0:
