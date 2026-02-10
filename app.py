@@ -54,7 +54,9 @@ if st.button("Predict"):
     st.divider()
     st.subheader("Prediction Result")
     st.progress(float(prob))
-    
+
+    st.caption(f"Spam probability above 50% is classified as spam.")
+
     if prediction == 1:
         st.error(f"SPAM detected (Probability: {prob:.2%})")
     else:
