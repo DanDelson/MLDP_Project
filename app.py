@@ -15,11 +15,17 @@ user_inputs = []
 
 st.subheader("Enter Feature Values")
 
-for col in feature_cols:
-    value = st.number_input(col, min_value=0.0, max_value=100.0, value=0.0)
-    user_inputs.append(value)
+with st.expander("Feature Descriptions"):
+    for col in feature_cols:
+        value = st.number_input(col, min_value=0.0, value=0.0)
+        user_inputs.append(value)
 
 if st.button("Predict"):
+
+    if sum(user_inputs) == 0:
+        st.warning("Please enter at least one non-zero value to make a prediction.")
+        st.stop()
+
     prediction = model.predict([user_inputs])[0]
     prob = model.predict_proba([user_inputs])[0][1]
 
